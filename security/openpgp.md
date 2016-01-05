@@ -128,7 +128,7 @@ To [distribute](http://security.stackexchange.com/questions/406/how-should-i-dis
 In order to use a HKPS server (highly recommended), you'll need to first download its CA certificates. We'll use sks-keyservers. Then [download the CA](https://sks-keyservers.net/sks-keyservers.netCA.pem) and saves it in your machine:
 
 ```
-wget -O $HOME/.gnupg/sks-keyservers.netCA.pem -nv \
+$ wget -O $HOME/.gnupg/sks-keyservers.netCA.pem -nv \
     --ca-certificate=/usr/local/etc/openssl/cert.pem \
     https://sks-keyservers.net/sks-keyservers.netCA.pem
 ```
@@ -165,7 +165,37 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA ... oSFl8ZpqJ COMMENT
 
 This line can be added to `~/.ssh/authorized_keys` on your remote server, and the private key from your HSM will be used to connect to it.
 
-### 8. Customize your settings
+### 9. Generate an revocation certificate
+
+You should generate an revocation token in a case your key gets stolen. That you can alert everyone that this key was compromised and shouldn't be used anymore. This is the worst-case scenario, because you will lose all your web of trust. So keep your primary key very safe, in a offline storage.
+
+```
+$ gpg2 --gen-revoke <KEY_ID> > <KEY_ID>-revocation-cert.asc
+Create a revocation certificate for this key? (y/N) y
+Please select the reason for the revocation:
+  0 = No reason specified
+  1 = Key has been compromised
+  2 = Key is superseded
+  3 = Key is no longer used
+  Q = Cancel
+(Probably you want to select 1 here)
+Your decision? 1
+Enter an optional description; end it with an empty line:
+> Created during key creation, emergency use only.
+>
+Reason for revocation: Key has been compromised
+Created during key creation, emergency use only.
+Is this okay? (y/N) y
+```
+
+If you ever need to use this certificate, you'll just have to import it, and then send it to the keyservers:
+
+```
+$ gpg2 --import /path/to/<KEY_ID>-revocation-cert.asc
+$ gpg2 --send-keys <KEY_ID>
+```
+
+### 10. Customize your settings
 
 Take a time to read your `~/.gnupg/gpg.conf` file and configure a lot of stuff there.
 
@@ -183,7 +213,7 @@ Fetch new information from the key servers. Good practice is to use `parcimonie`
 #### `gpg2 --list-keys` or `gpg2 -k`
 List all the public keys in your `pubring.gpg`
 ```
-gpg2 -K
+$ gpg2 -K
 sec#  3072R/B8EFD59D 2015-01-02 [expires: 2016-01-02]
 uid                  Eric Severance <esev@esev.com>
 ssb>  2048R/EE86E896 2015-01-02
@@ -211,3 +241,4 @@ Generates a new key. The expert flag allows you to edit the capabilities of each
 - Managing subkeys: https://wiki.debian.org/Subkeys
 - More complete guide of setup using good practices: http://blog.josefsson.org/2014/06/23/offline-gnupg-master-key-and-subkeys-on-yubikey-neo-smartcard/
 - Setup using a Yubikey: https://jclement.ca/articles/2015/gpg-smartcard/
+- Using OpenPGP properly: https://www.digitalocean.com/community/tutorials/how-to-use-gpg-to-encrypt-and-sign-messages-on-an-ubuntu-12-04-vps
