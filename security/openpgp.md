@@ -181,7 +181,9 @@ Please select the reason for the revocation:
 (Probably you want to select 1 here)
 Your decision? 1
 Enter an optional description; end it with an empty line:
-> Created during key creation, emergency use only.
+> Using revocation certificate that was generated when key <KEY_ID> was
+> first created.  It is very likely that I have lost access to the
+> private key.
 >
 Reason for revocation: Key has been compromised
 Created during key creation, emergency use only.
