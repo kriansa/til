@@ -1,10 +1,18 @@
-# OpenPGP
+# PGP
 
-In public key cryptography, a key is really a pair: a public key, and a private key. You use the private key to digitally sign files, and others use the public key to verify the signature. Or, others use the public key to encrypt something, and you use the private key to decrypt it.
+Pretty Good Privacy (PGP) is a data encryption and decryption computer program that provides cryptographic privacy and authentication for data communication. PGP is often used for signing, encrypting, and decrypting texts, e-mails, files, directories, and whole disk partitions and to increase the security of e-mail communications. It was created by Phil Zimmermann in 1991.
+
+If you're not familiar with PGP, I suggest you to start by reading [this great article](http://zacharyvoase.com/2009/08/20/openpgp/).
+
+## Public Key Cryptography
+
+In public key cryptography, whenever you mention key is actually a pair which contains a public, and a private key. You use the private key to digitally sign files, and others use the public key to verify the signature. Or, others use the public key to encrypt something, and you use the private key to decrypt it.
 
 As long as only you have access to the private key, other people can rely on your digital signatures being made by you, and you can rely on nobody else being able to read messages encrypted for you. (see: https://wiki.debian.org/Subkeys)
 
-But if you're not familiar with PGP, I suggest you to start by reading [this great article](http://zacharyvoase.com/2009/08/20/openpgp/).
+## GnuPG
+
+[GnuPG](https://gnupg.org/) is a well known open-source implementation of the PGP protocol. This guide covers the use of its version 2.0 (stable), which is widely used and is the same used by [GPG-Tools](https://gpgtools.org/). However, there has some notable improvements in the modern version (> 2.1), so I recommend you to start by using it if you haven't already. Read what's changed since 2.0 [here](https://www.gnupg.org/faq/whats-new-in-2.1.html).
 
 ## Key definition
 
@@ -197,6 +205,8 @@ $ gpg2 --import /path/to/<KEY_ID>-revocation-cert.asc
 $ gpg2 --send-keys <KEY_ID>
 ```
 
+Now, whenever people who has your key fetches it from the server, they will get your revocation for that key. That's why it's important to keep your keys updated. Remember that once you send it to the server, there's no going back. There's no such thing as key deletion, but you can revoke it.
+
 ### 10. Customize your settings
 
 Take a time to read your `~/.gnupg/gpg.conf` file and configure a lot of stuff there.
@@ -244,3 +254,4 @@ Generates a new key. The expert flag allows you to edit the capabilities of each
 - More complete guide of setup using good practices: http://blog.josefsson.org/2014/06/23/offline-gnupg-master-key-and-subkeys-on-yubikey-neo-smartcard/
 - Setup using a Yubikey: https://jclement.ca/articles/2015/gpg-smartcard/
 - Using OpenPGP properly: https://www.digitalocean.com/community/tutorials/how-to-use-gpg-to-encrypt-and-sign-messages-on-an-ubuntu-12-04-vps
+- Signing a OpenPGP key: https://carouth.com/blog/2014/05/25/signing-pgp-keys/
