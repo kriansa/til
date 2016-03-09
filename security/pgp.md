@@ -211,6 +211,43 @@ Now, whenever people who has your key fetches it from the server, they will get 
 
 Take a time to read your `~/.gnupg/gpg.conf` file and configure a lot of stuff there.
 
+### 11. Sharing your public key
+
+Once you've sent your keys to the keyserver, you should know that the 32bit key ids aren't realiable. You should give your fingerprint instead and whoever needs it can fetch from the keyserver.
+
+```
+$ gpg2 --list-keys --fingerprint
+pub   rsa4096/D39DC0E3 2014-10-28 [SC]
+      Key fingerprint = 409B 6B17 96C2 7546 2A17  0311 3804 BB82 D39D C0E3
+uid         [ unknown] Michal Papis (RVM signing) <mpapis@gmail.com>
+sub   rsa2048/C71866D7 2015-11-02 [E]
+sub   rsa4096/BF04FF17 2014-10-28 [S] [expires: 2017-03-08]
+```
+
+And then it can be imported just like that:
+
+```
+$ gpg2 --recv-keys '409B 6B17 96C2 7546 2A17  0311 3804 BB82 D39D C0E3'
+```
+
+Another way to share your key is by just exporting it as a file. Doing it is very easy, just type:
+
+```
+$ gpg2 --export --armor <Key_ID> > mykey.asc
+```
+
+And done! Now other people should first check its fingerprint by doing:
+
+```
+$ gpg2 --with-fingerprint mykey.asc
+```
+
+Then, if everything checks, you just import it:
+
+```
+$ gpg2 --import mykey.asc
+```
+
 ## Cheatsheet
 
 #### `gpg2 --encrypt <INPUT>`
@@ -255,3 +292,4 @@ Generates a new key. The expert flag allows you to edit the capabilities of each
 - Setup using a Yubikey: https://jclement.ca/articles/2015/gpg-smartcard/
 - Using OpenPGP properly: https://www.digitalocean.com/community/tutorials/how-to-use-gpg-to-encrypt-and-sign-messages-on-an-ubuntu-12-04-vps
 - Signing a OpenPGP key: https://carouth.com/blog/2014/05/25/signing-pgp-keys/
+- Why 32bit keys are not reliable: https://evil32.com/
