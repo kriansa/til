@@ -4,7 +4,7 @@ Pretty Good Privacy (PGP) is a data encryption and decryption computer program t
 
 If you're not familiar with PGP, I suggest you to start by reading [this great article](http://zacharyvoase.com/2009/08/20/openpgp/).
 
-## Public Key Cryptography
+## Public Key Cryptography (PKI)
 
 In public key cryptography, whenever you mention key is actually a pair which contains a public, and a private key. You use the private key to digitally sign files, and others use the public key to verify the signature. Or, others use the public key to encrypt something, and you use the private key to decrypt it.
 
@@ -60,7 +60,7 @@ Remember to set a expire date to your keys, and create a reminder on your calend
 
 ### 2. Backup
 
-Now, after the keys are generated, backup them! Copy the `~/.gnupg` folder to a pendrive. That should do it, it's not enough. Let's export them into a file - and even [print it out](http://security.stackexchange.com/questions/16209/is-there-a-standard-for-printing-a-public-key-as-a-barcode) on a paper.
+Now, after the keys are generated, backup them! Copy the `~/.gnupg` folder to a pendrive. That should do it, but is not enough. Let's export them to a file - and even [print it out](http://security.stackexchange.com/questions/16209/is-there-a-standard-for-printing-a-public-key-as-a-barcode) on a paper.
 
 ```
 $ gpg2 --armor --export-secret-keys <KEY_ID> > /media/USB/<KEY_ID>-secret-key.gpg
@@ -69,7 +69,7 @@ $ gpg2 --armor --export-secret-subkeys <KEY_ID> > /media/USB/<KEY_ID>-secret-sub
 
 ### 3. Delete your master secret key
 
-Yes, you read it right. You won't need your master key again until you need to certify another key, or generate a subkey. Since you've already made your backup, you can remove it.
+Yes, you've read it right. You won't need your master key again until you need to certify another key, or generate a subkey. Since you've already made your backup, you can remove it.
 
 ```
 $ gpg2 --delete-secret-key <KEY_ID>
@@ -173,7 +173,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA ... oSFl8ZpqJ COMMENT
 
 This line can be added to `~/.ssh/authorized_keys` on your remote server, and the private key from your HSM will be used to connect to it.
 
-### 9. Generate an revocation certificate
+### 8. Generate an revocation certificate
 
 You should generate an revocation token in a case your key gets stolen. That you can alert everyone that this key was compromised and shouldn't be used anymore. This is the worst-case scenario, because you will lose all your web of trust. So keep your primary key very safe, in a offline storage.
 
@@ -207,11 +207,11 @@ $ gpg2 --send-keys <KEY_ID>
 
 Now, whenever people who has your key fetches it from the server, they will get your revocation for that key. That's why it's important to keep your keys updated. Remember that once you send it to the server, there's no going back. There's no such thing as key deletion, but you can revoke it.
 
-### 10. Customize your settings
+### 9. Customize your settings
 
 Take a time to read your `~/.gnupg/gpg.conf` file and configure a lot of stuff there.
 
-### 11. Sharing your public key
+### 10. Sharing your public key
 
 Once you've sent your keys to the keyserver, you should know that the 32bit key ids aren't realiable. You should give your fingerprint instead and whoever needs it can fetch from the keyserver.
 
@@ -281,6 +281,12 @@ Edits a key. The expert flag allows you to generate auth subkeys
 #### `gpg2 --gen-key [--expert]`
 Generates a new key. The expert flag allows you to edit the capabilities of each key
 
+#### `gpg2 --with-fingerprint <file>`
+Checks for keys in a given file without importing it
+
+#### `gpg2 --import <file>`
+Import keys inside a file. Be careful, check for the fingerprints first.
+
 ## Resources
 - Long series post of GnuPG: http://spin.atomicobject.com/2013/09/25/gpg-gnu-privacy-guard/
 - Understanding the concepts of PGP: http://zacharyvoase.com/2009/08/20/openpgp/
@@ -291,5 +297,6 @@ Generates a new key. The expert flag allows you to edit the capabilities of each
 - More complete guide of setup using good practices: http://blog.josefsson.org/2014/06/23/offline-gnupg-master-key-and-subkeys-on-yubikey-neo-smartcard/
 - Setup using a Yubikey: https://jclement.ca/articles/2015/gpg-smartcard/
 - Using OpenPGP properly: https://www.digitalocean.com/community/tutorials/how-to-use-gpg-to-encrypt-and-sign-messages-on-an-ubuntu-12-04-vps
-- Signing a OpenPGP key: https://carouth.com/blog/2014/05/25/signing-pgp-keys/
 - Why 32bit keys are not reliable: https://evil32.com/
+- Signing a OpenPGP key: https://carouth.com/blog/2014/05/25/signing-pgp-keys/
+- Very good guide on how PGP works: https://futureboy.us/pgp.html
